@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Serving Size Adjuster — CookCalc</title>
+<meta name="description" content="Serving size adjuster. Enter nutrition label values and your actual portion to recalculate calories, protein, fat, and carbs.">
+<meta property="og:title" content="Serving Size Adjuster — CookCalc">
+<meta property="og:description" content="Serving size adjuster. Enter nutrition label values and your actual portion to recalculate calories, protein, fat, and carbs.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://thehivemakes.github.io/hive-cook-calc/serving-adjuster.html">
+<link rel="stylesheet" href="style.css">
+<script src="js/calc-core.js"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Serving Size Adjuster",
+  "url": "https://thehivemakes.github.io/hive-cook-calc/serving-adjuster.html",
+  "description": "Serving size adjuster. Enter nutrition label values and your actual portion to recalculate calories, protein, fat, and carbs.",
+  "applicationCategory": "UtilityApplication",
+  "operatingSystem": "Any"
+}
+</script>
+</head>
+<body>
+<header><div class="header-inner"><div class="logo">Cook<span>Calc</span></div><div class="tagline">Free cooking calculators</div></div></header>
+<nav><div class="nav-inner"><a href="index.html">CookCalc</a><span class="sep">/</span><span>Serving Size Adjuster</span></div></nav>
+<main>
+  <div class="ad-leaderboard" id="ad-top">Ad</div>
+  <div class="card">
+    <h1>Serving Size Adjuster</h1>
+    <p class="subtitle">Enter per-serving nutrition and your actual portion to find adjusted values.</p>
+    <div class="form-grid">
+      <div class="field">
+        <label for="label_size">Label serving size (g)</label>
+        <input type="number" id="label_size" step="1" placeholder="30">
+      </div>
+      <div class="field">
+        <label for="actual_size">Your portion (g)</label>
+        <input type="number" id="actual_size" step="1" placeholder="50">
+      </div>
+      <div class="field">
+        <label for="label_cal">Calories (per label serving)</label>
+        <input type="number" id="label_cal" step="1" placeholder="120">
+      </div>
+      <div class="field">
+        <label for="label_protein">Protein (g)</label>
+        <input type="number" id="label_protein" step="0.1" placeholder="5">
+      </div>
+      <div class="field">
+        <label for="label_fat">Fat (g)</label>
+        <input type="number" id="label_fat" step="0.1" placeholder="3">
+      </div>
+      <div class="field">
+        <label for="label_carb">Carbs (g)</label>
+        <input type="number" id="label_carb" step="0.1" placeholder="20">
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="calculate()">Calculate</button>
+    <button class="btn btn-ghost" onclick="clearAll()">Clear</button>
+    <div class="result" id="result">
+      <div class="result-row">
+        <span class="result-label">Adjusted calories</span>
+        <span class="result-value" id="adj-cal">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Adjusted protein</span>
+        <span class="result-value" id="adj-protein">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Adjusted fat</span>
+        <span class="result-value" id="adj-fat">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Adjusted carbs</span>
+        <span class="result-value" id="adj-carb">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Portion factor</span>
+        <span class="result-value" id="adj-factor">—</span>
+      </div>
+      <div class="result-note">Factor = your portion / label serving size. Multiply all nutrition values by this factor.</div>
+    </div>
+  </div>
+
+  <div class="ad-rectangle" id="ad-mid">Ad</div>
+  <div class="seo-section">
+    <h2>Adjusting Nutrition for Your Actual Serving</h2>
+    <p>Nutrition labels show values for a specific serving size, but your actual portion is often different. Divide your portion by the label serving size to get the multiplication factor.</p>
+  </div>
+</main>
+<footer>Free cooking calculators. No signup, no tracking. Conversions are approximate — density varies by ingredient.<br>Built by <a href="https://thehivemakes.github.io/" style="color:var(--accent)">The Hive</a></footer>
+<script>
+
+function calculate() {
+  const ls = CalcCore.get('label_size');
+  const as_ = CalcCore.get('actual_size');
+  if (isNaN(ls)||isNaN(as_)||ls<=0||as_<=0) return;
+  const f = as_ / ls;
+  const cal = CalcCore.get('label_cal');
+  const pro = CalcCore.get('label_protein');
+  const fat = CalcCore.get('label_fat');
+  const carb = CalcCore.get('label_carb');
+
+  CalcCore.set('adj-cal', !isNaN(cal) ? CalcCore.fmtInt(cal*f) + ' cal' : '\u2014');
+  CalcCore.set('adj-protein', !isNaN(pro) ? CalcCore.fmt(pro*f,1) + ' g' : '\u2014');
+  CalcCore.set('adj-fat', !isNaN(fat) ? CalcCore.fmt(fat*f,1) + ' g' : '\u2014');
+  CalcCore.set('adj-carb', !isNaN(carb) ? CalcCore.fmt(carb*f,1) + ' g' : '\u2014');
+  CalcCore.set('adj-factor', CalcCore.fmt(f, 2) + 'x');
+  CalcCore.showResult();
+  CalcCore.saveParams(['label_size','actual_size','label_cal','label_protein','label_fat','label_carb']);
+}
+
+function clearAll() {
+  ["label_size", "actual_size", "label_cal", "label_protein", "label_fat", "label_carb"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = el.defaultValue || '';
+  });
+  document.getElementById('result').classList.remove('visible');
+  history.replaceState(null, '', window.location.pathname);
+}
+
+document.addEventListener('DOMContentLoaded', () => { if (window.location.search) calculate(); });
+</script>
+</body>
+</html>

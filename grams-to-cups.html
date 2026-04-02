@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grams to Cups Converter — CookCalc</title>
+<meta name="description" content="Grams to cups converter. Convert weight to volume for flour, sugar, butter, and more. Accurate density-based conversions. Free cooking tool.">
+<meta property="og:title" content="Grams to Cups Converter — CookCalc">
+<meta property="og:description" content="Grams to cups converter. Convert weight to volume for flour, sugar, butter, and more. Accurate density-based conversions. Free cooking tool.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://thehivemakes.github.io/hive-cook-calc/grams-to-cups.html">
+<link rel="stylesheet" href="style.css">
+<script src="js/calc-core.js"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Grams to Cups Converter",
+  "url": "https://thehivemakes.github.io/hive-cook-calc/grams-to-cups.html",
+  "description": "Grams to cups converter. Convert weight to volume for flour, sugar, butter, and more. Accurate density-based conversions. Free cooking tool.",
+  "applicationCategory": "UtilityApplication",
+  "operatingSystem": "Any"
+}
+</script>
+</head>
+<body>
+<header><div class="header-inner"><div class="logo">Cook<span>Calc</span></div><div class="tagline">Free cooking calculators</div></div></header>
+<nav><div class="nav-inner"><a href="index.html">CookCalc</a><span class="sep">/</span><span>Grams to Cups Converter</span></div></nav>
+<main>
+  <div class="ad-leaderboard" id="ad-top">Ad</div>
+  <div class="card">
+    <h1>Grams to Cups Converter</h1>
+    <p class="subtitle">Select an ingredient and enter an amount to convert between weight and volume.</p>
+    <div class="form-grid">
+      <div class="field">
+        <label for="ingredient">Ingredient</label>
+        <select id="ingredient"><option value="125">All-purpose flour (125 g/cup)</option><option value="200">Granulated sugar (200 g/cup)</option><option value="220">Brown sugar, packed (220 g/cup)</option><option value="128">Powdered sugar (128 g/cup)</option><option value="227">Butter (227 g/cup)</option><option value="240">Milk (240 g/cup)</option><option value="240">Water (240 g/cup)</option><option value="340">Honey (340 g/cup)</option><option value="84">Rolled oats (84 g/cup)</option><option value="185">Rice, uncooked (185 g/cup)</option><option value="170">Chocolate chips (170 g/cup)</option><option value="140">Cocoa powder (140 g/cup)</option></select>
+      </div>
+      <div class="field">
+        <label for="amount">Amount</label>
+        <input type="number" id="amount" step="0.01" placeholder="250">
+      </div>
+      <div class="field">
+        <label for="from_unit">From unit</label>
+        <select id="from_unit"><option value="g">Grams</option><option value="cups">Cups</option><option value="tbsp">Tablespoons</option><option value="oz">Ounces</option></select>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="calculate()">Calculate</button>
+    <button class="btn btn-ghost" onclick="clearAll()">Clear</button>
+    <div class="result" id="result">
+      <div class="result-row">
+        <span class="result-label">Grams</span>
+        <span class="result-value" id="conv-g">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Cups</span>
+        <span class="result-value" id="conv-cups">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Tablespoons</span>
+        <span class="result-value" id="conv-tbsp">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Ounces</span>
+        <span class="result-value" id="conv-oz">—</span>
+      </div>
+      <div class="result-note">Conversions are based on ingredient density (grams per cup). Volume measurements vary by how the ingredient is scooped and packed. Weight (grams) is always more accurate for baking.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h2 style="font-size:16px;font-weight:700;margin-bottom:12px;">Common Ingredient Densities</h2>
+    <table class="ref-table" id="ref-table">
+      <thead><tr><th>Ingredient</th><th>Grams per Cup</th><th>Grams per Tbsp</th></tr></thead>
+      <tbody>
+        <tr><td>All-purpose flour</td><td>125</td><td>7.8</td></tr>
+        <tr><td>Granulated sugar</td><td>200</td><td>12.5</td></tr>
+        <tr><td>Brown sugar (packed)</td><td>220</td><td>13.8</td></tr>
+        <tr><td>Butter</td><td>227</td><td>14.2</td></tr>
+        <tr><td>Milk / Water</td><td>240</td><td>15.0</td></tr>
+        <tr><td>Honey</td><td>340</td><td>21.3</td></tr>
+        <tr><td>Cocoa powder</td><td>140</td><td>8.8</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="ad-rectangle" id="ad-mid">Ad</div>
+  <div class="seo-section">
+    <h2>Converting Grams to Cups (and Back)</h2>
+    <p>Cups and grams are not directly interchangeable because different ingredients have different densities. One cup of flour weighs about 125 grams, while one cup of sugar weighs about 200 grams.</p>
+    <p>For precise baking, weigh ingredients in grams with a kitchen scale. This converter helps when a recipe uses one system and you need the other.</p>
+  </div>
+</main>
+<footer>Free cooking calculators. No signup, no tracking. Conversions are approximate — density varies by ingredient.<br>Built by <a href="https://thehivemakes.github.io/" style="color:var(--accent)">The Hive</a></footer>
+<script>
+
+function calculate() {
+  const gPerCup = parseFloat(CalcCore.getSelect('ingredient'));
+  const amount = CalcCore.get('amount');
+  const from = CalcCore.getSelect('from_unit');
+  if (isNaN(gPerCup)||isNaN(amount)||amount<=0) return;
+
+  const gPerTbsp = gPerCup / 16;
+  let grams;
+  if (from === 'g') grams = amount;
+  else if (from === 'cups') grams = amount * gPerCup;
+  else if (from === 'tbsp') grams = amount * gPerTbsp;
+  else if (from === 'oz') grams = amount * 28.3495;
+
+  CalcCore.set('conv-g', CalcCore.fmt(grams, 1) + ' g');
+  CalcCore.set('conv-cups', CalcCore.fmt(grams / gPerCup, 2) + ' cups');
+  CalcCore.set('conv-tbsp', CalcCore.fmt(grams / gPerTbsp, 1) + ' tbsp');
+  CalcCore.set('conv-oz', CalcCore.fmt(grams / 28.3495, 2) + ' oz');
+  CalcCore.showResult();
+  CalcCore.saveParams(['ingredient','amount','from_unit']);
+}
+
+function clearAll() {
+  ["ingredient", "amount", "from_unit"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = el.defaultValue || '';
+  });
+  document.getElementById('result').classList.remove('visible');
+  history.replaceState(null, '', window.location.pathname);
+}
+
+document.addEventListener('DOMContentLoaded', () => { if (window.location.search) calculate(); });
+</script>
+</body>
+</html>

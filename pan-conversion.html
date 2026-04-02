@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Baking Pan Conversion — CookCalc</title>
+<meta name="description" content="Baking pan conversion calculator. Switch between round, square, and rectangular pans. Find the recipe scaling factor. Free tool.">
+<meta property="og:title" content="Baking Pan Conversion — CookCalc">
+<meta property="og:description" content="Baking pan conversion calculator. Switch between round, square, and rectangular pans. Find the recipe scaling factor. Free tool.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://thehivemakes.github.io/hive-cook-calc/pan-conversion.html">
+<link rel="stylesheet" href="style.css">
+<script src="js/calc-core.js"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Baking Pan Conversion",
+  "url": "https://thehivemakes.github.io/hive-cook-calc/pan-conversion.html",
+  "description": "Baking pan conversion calculator. Switch between round, square, and rectangular pans. Find the recipe scaling factor. Free tool.",
+  "applicationCategory": "UtilityApplication",
+  "operatingSystem": "Any"
+}
+</script>
+</head>
+<body>
+<header><div class="header-inner"><div class="logo">Cook<span>Calc</span></div><div class="tagline">Free cooking calculators</div></div></header>
+<nav><div class="nav-inner"><a href="index.html">CookCalc</a><span class="sep">/</span><span>Baking Pan Conversion</span></div></nav>
+<main>
+  <div class="ad-leaderboard" id="ad-top">Ad</div>
+  <div class="card">
+    <h1>Baking Pan Conversion</h1>
+    <p class="subtitle">Select original and new pan sizes to find the recipe multiplier.</p>
+    <div class="form-grid">
+      <div class="field">
+        <label for="orig_shape">Original pan shape</label>
+        <select id="orig_shape"><option value="round">Round</option><option value="square">Square</option><option value="rect">Rectangular</option></select>
+      </div>
+      <div class="field">
+        <label for="orig_dim1">Original pan size 1 (inches)</label>
+        <input type="number" id="orig_dim1" step="0.5" placeholder="9">
+      </div>
+      <div class="field">
+        <label for="orig_dim2">Size 2 (for rectangular only)</label>
+        <input type="number" id="orig_dim2" step="0.5" placeholder="13">
+      </div>
+      <div class="field">
+        <label for="new_shape">New pan shape</label>
+        <select id="new_shape"><option value="round">Round</option><option value="square">Square</option><option value="rect">Rectangular</option></select>
+      </div>
+      <div class="field">
+        <label for="new_dim1">New pan size 1 (inches)</label>
+        <input type="number" id="new_dim1" step="0.5" placeholder="8">
+      </div>
+      <div class="field">
+        <label for="new_dim2">Size 2 (for rectangular only)</label>
+        <input type="number" id="new_dim2" step="0.5" placeholder="">
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="calculate()">Calculate</button>
+    <button class="btn btn-ghost" onclick="clearAll()">Clear</button>
+    <div class="result" id="result">
+      <div class="result-row">
+        <span class="result-label">Original pan area</span>
+        <span class="result-value" id="pan-orig-area">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">New pan area</span>
+        <span class="result-value" id="pan-new-area">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Recipe multiplier</span>
+        <span class="result-value" id="pan-factor">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Baking time adjustment</span>
+        <span class="result-value" id="pan-note">—</span>
+      </div>
+      <div class="result-note">Round: area = πr². Square: area = s². Rectangular: area = l×w. Scale recipe by the ratio of areas. Adjust baking time by ±10-15% when changing pan size significantly.</div>
+    </div>
+  </div>
+
+  <div class="ad-rectangle" id="ad-mid">Ad</div>
+  <div class="seo-section">
+    <h2>Converting Between Baking Pan Sizes</h2>
+    <p>When you swap pans, you need to adjust the recipe quantity to maintain the same batter depth. The multiplier is the ratio of the new pan area to the original pan area.</p>
+    <p>A 9-inch round pan has about 64 square inches of area. An 8-inch square pan has 64 square inches too — so they are interchangeable without adjusting the recipe!</p>
+  </div>
+</main>
+<footer>Free cooking calculators. No signup, no tracking. Conversions are approximate — density varies by ingredient.<br>Built by <a href="https://thehivemakes.github.io/" style="color:var(--accent)">The Hive</a></footer>
+<script>
+
+function panArea(shape, d1, d2) {
+  if (shape === 'round') return Math.PI * (d1/2) * (d1/2);
+  if (shape === 'square') return d1 * d1;
+  if (shape === 'rect') return d1 * (d2 || d1);
+  return 0;
+}
+function calculate() {
+  const os = CalcCore.getSelect('orig_shape');
+  const od1 = CalcCore.get('orig_dim1');
+  const od2 = CalcCore.get('orig_dim2');
+  const ns = CalcCore.getSelect('new_shape');
+  const nd1 = CalcCore.get('new_dim1');
+  const nd2 = CalcCore.get('new_dim2');
+  if (isNaN(od1)||isNaN(nd1)||od1<=0||nd1<=0) return;
+
+  const origArea = panArea(os, od1, od2);
+  const newArea = panArea(ns, nd1, nd2);
+  if (origArea<=0||newArea<=0) return;
+  const factor = newArea / origArea;
+
+  CalcCore.set('pan-orig-area', CalcCore.fmt(origArea, 1) + ' sq in');
+  CalcCore.set('pan-new-area', CalcCore.fmt(newArea, 1) + ' sq in');
+  CalcCore.set('pan-factor', CalcCore.fmt(factor, 2) + 'x recipe');
+  let timeNote;
+  if (factor > 1.2) timeNote = 'Thinner batter \u2014 reduce baking time by ~10%';
+  else if (factor < 0.8) timeNote = 'Thicker batter \u2014 increase baking time by ~10-15%';
+  else timeNote = 'Similar depth \u2014 baking time should be about the same';
+  CalcCore.set('pan-note', timeNote);
+  CalcCore.showResult();
+  CalcCore.saveParams(['orig_shape','orig_dim1','orig_dim2','new_shape','new_dim1','new_dim2']);
+}
+
+function clearAll() {
+  ["orig_shape", "orig_dim1", "orig_dim2", "new_shape", "new_dim1", "new_dim2"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = el.defaultValue || '';
+  });
+  document.getElementById('result').classList.remove('visible');
+  history.replaceState(null, '', window.location.pathname);
+}
+
+document.addEventListener('DOMContentLoaded', () => { if (window.location.search) calculate(); });
+</script>
+</body>
+</html>

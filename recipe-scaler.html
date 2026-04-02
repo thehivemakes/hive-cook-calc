@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recipe Scaler — CookCalc</title>
+<meta name="description" content="Recipe scaling calculator. Enter original and target servings to find multiplied ingredient amounts. Free cooking tool.">
+<meta property="og:title" content="Recipe Scaler — CookCalc">
+<meta property="og:description" content="Recipe scaling calculator. Enter original and target servings to find multiplied ingredient amounts. Free cooking tool.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://thehivemakes.github.io/hive-cook-calc/recipe-scaler.html">
+<link rel="stylesheet" href="style.css">
+<script src="js/calc-core.js"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Recipe Scaler",
+  "url": "https://thehivemakes.github.io/hive-cook-calc/recipe-scaler.html",
+  "description": "Recipe scaling calculator. Enter original and target servings to find multiplied ingredient amounts. Free cooking tool.",
+  "applicationCategory": "UtilityApplication",
+  "operatingSystem": "Any"
+}
+</script>
+</head>
+<body>
+<header><div class="header-inner"><div class="logo">Cook<span>Calc</span></div><div class="tagline">Free cooking calculators</div></div></header>
+<nav><div class="nav-inner"><a href="index.html">CookCalc</a><span class="sep">/</span><span>Recipe Scaler</span></div></nav>
+<main>
+  <div class="ad-leaderboard" id="ad-top">Ad</div>
+  <div class="card">
+    <h1>Recipe Scaler</h1>
+    <p class="subtitle">Enter original and desired servings to get a scaling factor for all ingredients.</p>
+    <div class="form-grid">
+      <div class="field">
+        <label for="orig_servings">Original servings</label>
+        <input type="number" id="orig_servings" min="1" step="1" placeholder="4">
+      </div>
+      <div class="field">
+        <label for="new_servings">Desired servings</label>
+        <input type="number" id="new_servings" min="1" step="1" placeholder="12">
+      </div>
+      <div class="field">
+        <label for="ing1_amt">Ingredient 1 amount</label>
+        <input type="number" id="ing1_amt" step="0.01" placeholder="2">
+      </div>
+      <div class="field">
+        <label for="ing1_unit">Unit</label>
+        <select id="ing1_unit"><option value="cups">cups</option><option value="tbsp">tbsp</option><option value="tsp">tsp</option><option value="oz">oz</option><option value="g">grams</option><option value="lb">lbs</option><option value="ml">ml</option><option value="each">each</option></select>
+      </div>
+      <div class="field">
+        <label for="ing2_amt">Ingredient 2 amount</label>
+        <input type="number" id="ing2_amt" step="0.01" placeholder="1">
+      </div>
+      <div class="field">
+        <label for="ing2_unit">Unit</label>
+        <select id="ing2_unit"><option value="cups">cups</option><option value="tbsp">tbsp</option><option value="tsp">tsp</option><option value="oz">oz</option><option value="g">grams</option><option value="lb">lbs</option><option value="ml">ml</option><option value="each">each</option></select>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="calculate()">Calculate</button>
+    <button class="btn btn-ghost" onclick="clearAll()">Clear</button>
+    <div class="result" id="result">
+      <div class="result-row">
+        <span class="result-label">Scale factor</span>
+        <span class="result-value" id="scale-factor">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Ingredient 1 (scaled)</span>
+        <span class="result-value" id="scale-ing1">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Ingredient 2 (scaled)</span>
+        <span class="result-value" id="scale-ing2">—</span>
+      </div>
+      <div class="result-note">Scale factor = desired servings / original servings. Multiply every ingredient amount by this factor. For baking, scale carefully — leavening agents may not scale linearly above 2x.</div>
+    </div>
+  </div>
+
+  <div class="ad-rectangle" id="ad-mid">Ad</div>
+  <div class="seo-section">
+    <h2>How to Scale a Recipe</h2>
+    <p>To scale a recipe, divide the desired number of servings by the original number. This gives you the scale factor. Multiply every ingredient by that factor.</p>
+    <p>Cooking recipes scale well at any ratio. Baking recipes are more sensitive — especially leavening agents (baking powder, yeast) and eggs. For large batch baking, test the scaled recipe once before committing.</p>
+  </div>
+</main>
+<footer>Free cooking calculators. No signup, no tracking. Conversions are approximate — density varies by ingredient.<br>Built by <a href="https://thehivemakes.github.io/" style="color:var(--accent)">The Hive</a></footer>
+<script>
+
+function calculate() {
+  const orig = CalcCore.get('orig_servings');
+  const target = CalcCore.get('new_servings');
+  if (isNaN(orig)||isNaN(target)||orig<=0||target<=0) return;
+
+  const factor = target / orig;
+  const a1 = CalcCore.get('ing1_amt');
+  const u1 = CalcCore.getSelect('ing1_unit');
+  const a2 = CalcCore.get('ing2_amt');
+  const u2 = CalcCore.getSelect('ing2_unit');
+
+  CalcCore.set('scale-factor', CalcCore.fmt(factor, 2) + 'x');
+  if (!isNaN(a1)) CalcCore.set('scale-ing1', CalcCore.fmt(a1*factor, 2) + ' ' + u1);
+  else CalcCore.set('scale-ing1', '\u2014');
+  if (!isNaN(a2)) CalcCore.set('scale-ing2', CalcCore.fmt(a2*factor, 2) + ' ' + u2);
+  else CalcCore.set('scale-ing2', '\u2014');
+  CalcCore.showResult();
+  CalcCore.saveParams(['orig_servings','new_servings','ing1_amt','ing1_unit','ing2_amt','ing2_unit']);
+}
+
+function clearAll() {
+  ["orig_servings", "new_servings", "ing1_amt", "ing1_unit", "ing2_amt", "ing2_unit"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = el.defaultValue || '';
+  });
+  document.getElementById('result').classList.remove('visible');
+  history.replaceState(null, '', window.location.pathname);
+}
+
+document.addEventListener('DOMContentLoaded', () => { if (window.location.search) calculate(); });
+</script>
+</body>
+</html>

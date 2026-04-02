@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cost Per Serving Calculator — CookCalc</title>
+<meta name="description" content="Recipe cost per serving calculator. Enter ingredient prices to find total recipe cost and cost per plate. Free meal planning tool.">
+<meta property="og:title" content="Cost Per Serving Calculator — CookCalc">
+<meta property="og:description" content="Recipe cost per serving calculator. Enter ingredient prices to find total recipe cost and cost per plate. Free meal planning tool.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://thehivemakes.github.io/hive-cook-calc/cost-per-serving.html">
+<link rel="stylesheet" href="style.css">
+<script src="js/calc-core.js"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Cost Per Serving Calculator",
+  "url": "https://thehivemakes.github.io/hive-cook-calc/cost-per-serving.html",
+  "description": "Recipe cost per serving calculator. Enter ingredient prices to find total recipe cost and cost per plate. Free meal planning tool.",
+  "applicationCategory": "UtilityApplication",
+  "operatingSystem": "Any"
+}
+</script>
+</head>
+<body>
+<header><div class="header-inner"><div class="logo">Cook<span>Calc</span></div><div class="tagline">Free cooking calculators</div></div></header>
+<nav><div class="nav-inner"><a href="index.html">CookCalc</a><span class="sep">/</span><span>Cost Per Serving Calculator</span></div></nav>
+<main>
+  <div class="ad-leaderboard" id="ad-top">Ad</div>
+  <div class="card">
+    <h1>Cost Per Serving Calculator</h1>
+    <p class="subtitle">Enter ingredient costs and servings to find cost per plate.</p>
+    <div class="form-grid">
+      <div class="field">
+        <label for="num_servings_cost">Number of servings</label>
+        <input type="number" id="num_servings_cost" min="1" step="1" placeholder="4">
+      </div>
+      <div class="field">
+        <label for="cost1">Ingredient 1 cost ($)</label>
+        <input type="number" id="cost1" step="0.01" placeholder="3.50">
+      </div>
+      <div class="field">
+        <label for="cost2">Ingredient 2 cost ($)</label>
+        <input type="number" id="cost2" step="0.01" placeholder="2.00">
+      </div>
+      <div class="field">
+        <label for="cost3">Ingredient 3 cost ($)</label>
+        <input type="number" id="cost3" step="0.01" placeholder="1.50">
+      </div>
+      <div class="field">
+        <label for="cost4">Ingredient 4 cost ($)</label>
+        <input type="number" id="cost4" step="0.01" placeholder="">
+      </div>
+      <div class="field">
+        <label for="cost5">Ingredient 5 cost ($)</label>
+        <input type="number" id="cost5" step="0.01" placeholder="">
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="calculate()">Calculate</button>
+    <button class="btn btn-ghost" onclick="clearAll()">Clear</button>
+    <div class="result" id="result">
+      <div class="result-row">
+        <span class="result-label">Total recipe cost</span>
+        <span class="result-value" id="cps-total">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Cost per serving</span>
+        <span class="result-value" id="cps-per">—</span>
+      </div>
+      <div class="result-note">Enter the cost of the amount of each ingredient actually used in the recipe (not the whole package price unless you use the whole package).</div>
+    </div>
+  </div>
+
+  <div class="ad-rectangle" id="ad-mid">Ad</div>
+  <div class="seo-section">
+    <h2>How to Calculate Cost Per Serving</h2>
+    <p>Knowing your cost per serving helps with meal planning and budgeting. Add up the cost of all ingredients used, then divide by the number of servings.</p>
+    <p>To find the cost of a partial ingredient (like half a bag of flour), divide the package price by the total amount, then multiply by the amount used.</p>
+  </div>
+</main>
+<footer>Free cooking calculators. No signup, no tracking. Conversions are approximate — density varies by ingredient.<br>Built by <a href="https://thehivemakes.github.io/" style="color:var(--accent)">The Hive</a></footer>
+<script>
+
+function calculate() {
+  const servings = CalcCore.get('num_servings_cost');
+  if (isNaN(servings)||servings<=0) return;
+  let total = 0;
+  for (let i=1; i<=5; i++) {
+    const c = CalcCore.get('cost'+i);
+    if (!isNaN(c) && c > 0) total += c;
+  }
+  CalcCore.set('cps-total', '$' + CalcCore.fmt(total, 2));
+  CalcCore.set('cps-per', '$' + CalcCore.fmt(total / servings, 2) + ' per serving');
+  CalcCore.showResult();
+  CalcCore.saveParams(['num_servings_cost','cost1','cost2','cost3','cost4','cost5']);
+}
+
+function clearAll() {
+  ["num_servings_cost", "cost1", "cost2", "cost3", "cost4", "cost5"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = el.defaultValue || '';
+  });
+  document.getElementById('result').classList.remove('visible');
+  history.replaceState(null, '', window.location.pathname);
+}
+
+document.addEventListener('DOMContentLoaded', () => { if (window.location.search) calculate(); });
+</script>
+</body>
+</html>
