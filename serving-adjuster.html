@@ -8,7 +8,7 @@
 <meta property="og:title" content="Serving Size Adjuster — CookCalc">
 <meta property="og:description" content="Serving size adjuster. Enter nutrition label values and your actual portion to recalculate calories, protein, fat, and carbs.">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://cook.thehivemakes.com/serving-adjuster.html">
+<link rel="canonical" href="https://thehivemakes.github.io/hive-cook-calc/serving-adjuster.html">
 <link rel="stylesheet" href="style.css">
 <script src="js/calc-core.js"></script>
 <script type="application/ld+json">
@@ -16,7 +16,7 @@
   "@context": "https://schema.org",
   "@type": "WebApplication",
   "name": "Serving Size Adjuster",
-  "url": "https://cook.thehivemakes.com/serving-adjuster.html",
+  "url": "https://thehivemakes.github.io/hive-cook-calc/serving-adjuster.html",
   "description": "Serving size adjuster. Enter nutrition label values and your actual portion to recalculate calories, protein, fat, and carbs.",
   "applicationCategory": "UtilityApplication",
   "operatingSystem": "Any"
@@ -82,6 +82,17 @@
       </div>
       <div class="result-note">Factor = your portion / label serving size. Multiply all nutrition values by this factor.</div>
     </div>
+  </div>
+  <div class="card email-capture">
+    <h2>Get your results + weekly cooking tips</h2>
+    <p>One email per week. Tips, tool deals, new calculators. Unsubscribe anytime.</p>
+    <form method="POST" action="https://buttondown.com/api/emails/embed-subscribe/thehivemakes" class="capture-form">
+      <input type="email" name="email" placeholder="your@email.com" required>
+      <input type="hidden" name="tag" value="cook">
+      <input type="hidden" name="metadata__source" value="serving-adjuster">
+      <button type="submit" class="btn btn-primary">Send My Results</button>
+    </form>
+    <p class="capture-note">Free tools, useful tips. We recommend products we'd actually use.</p>
   </div>
 
   <div class="ad-rectangle" id="ad-mid">Ad</div>
